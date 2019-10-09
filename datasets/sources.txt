@@ -1,0 +1,3 @@
+https://archive.ics.uci.edu/ml/datasets/Heart+Disease  (14 Attribute Version)
+https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Coimbra
+https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.names

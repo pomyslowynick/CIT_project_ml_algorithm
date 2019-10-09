@@ -74,7 +74,7 @@ def predictClass():
 	print("%25s %10s"% ("BMI: ",						str(randinput[5])))
 	print("%25s %10s"% ("Diabetes Pedigree Func: ",		str(randinput[6])))
 	print(dash)
-	print('Prediction(%%): %.2f %%'%  prediction[0])
+	print('Risk: %d %%'%  (prediction[0]*100))
 	print("Actual Output: " + str(randoutput))
 	print(dash)
 	#Actual Output: 1 - Diabetic 0 - Not Diabetic
