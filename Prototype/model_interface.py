@@ -1,46 +1,34 @@
 # first neural network with keras tutorial
 from numpy import loadtxt
-from keras.models import Sequential
-from keras.layers import Dense
+from keras.models import model_from_json
 import random
 import numpy as np
 
-model = Sequential()
 dataset = loadtxt('pima_indians_diabetes.csv', delimiter=',')
 dash = "-" * 10
+inputData = dataset[:,0:8]
+output = dataset[:,8]
 
-def initAlg():
-	# split into input (inputData) and output (output) variables
-	# inputData - input variables
-	# Y - Output 0 and 1
-	inputData = dataset[:,0:8]
-	output = dataset[:,8]
+def load_model():
+	print("Loading model...")
+	json_file = open('diab_model.json', 'r')
+	loaded_model_json = json_file.read()
+	json_file.close()
+	loaded_model = model_from_json(loaded_model_json)
+	# load weights into new model
+	loaded_model.load_weights("model.h5")
+	loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+	print("Loaded model from disk")
 
-	# define the keras model (hidden layers)
-	# Accuracy increased from 70% to 90% by adding 2 more hiddden layers
-	# Nodes increased in second hidden layer to improve acuracy
-	model.add(Dense(12, input_dim=8, activation='relu'))
-	model.add(Dense(12, activation='relu'))
-	model.add(Dense(8, activation='relu'))
-	model.add(Dense(8, activation='relu'))
-	model.add(Dense(1, activation='sigmoid'))
+	return loaded_model
 
-	# compile the keras model
-	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-	# fit the keras model on the dataset
-	# epoch = complete pass through all rows
-	# batch_size = Samples considered by the model within an epoch before weights are updated.
-	model.fit(inputData, output, epochs=1000, batch_size=10, verbose=0)
-
-	return inputData, output
 
 # evaluate the keras model
-def evaluate():
+def evaluate(model):
 	_, accuracy = model.evaluate(inputData, output)
 	print('Accuracy: %.2f %%' % (accuracy*100))
 
-
+#For testing
 def predictClasses():
 	# make probability predictions with the model
 	# Accuracy increased by training with larger dataset, more hidden layers or adjusting epoch/batch_size
@@ -53,7 +41,7 @@ def predictClasses():
 		else:
 			print('%s => %.2f (expected %d)' % (inputData[i].tolist(), predictions[i], output[i]))
 
-
+#For testing
 def predictClass():
 	rows = sum(1 for row in dataset)
 	rand = random.randint(0, rows)
@@ -91,7 +79,7 @@ def displayMenu():
 
 		option = int(input("Enter 1-4: "))
 		if(option == 1):
-			evaluate()
+			evaluate(model)
 		elif(option == 2):
 			predictClasses()
 		elif(option == 3):
@@ -99,6 +87,6 @@ def displayMenu():
 		elif(option == 4):
 			run = False
 
-print("Training...")
-inputData, output = initAlg()
+model = load_model()
+
 displayMenu()
