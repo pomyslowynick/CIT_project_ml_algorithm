@@ -3,6 +3,7 @@ from numpy import loadtxt
 from keras.models import model_from_json
 import random
 import numpy as np
+import pytest
 
 dataset = loadtxt('pima_indians_diabetes.csv', delimiter=',')
 dash = "-" * 10
@@ -68,6 +69,17 @@ def predictClass():
 	#Actual Output: 1 - Diabetic 0 - Not Diabetic
 	#Prediction - Percent chance inputs will return positive for diabetes
 
+def testClass(x):
+	inputs = inputData.tolist()
+	input = inputs[x]
+
+	test = np.array([input])
+	prediction = model.predict(test)
+
+	return float(prediction[0])
+
+
+
 def displayMenu():
 	run = True
 	while(run):
@@ -75,18 +87,26 @@ def displayMenu():
 		print("1. Evaluate the model")
 		print("2. See sample predictions")
 		print("3. Get prediction for random input")
-		print("4. Exit")
+		print("4. Pytest output")
+		print("5. Exit")
 
-		option = int(input("Enter 1-4: "))
+		option = int(input("Enter 1-5: "))
 		if(option == 1):
 			evaluate(model)
 		elif(option == 2):
 			predictClasses()
 		elif(option == 3):
 			predictClass()
-		elif(option == 4):
+		elif (option == 4):
+			test_Diab()
+		elif(option == 5):
 			run = False
+
+def test_Diab():
+	assert testClass(0) == 0.83139568567276
+
 
 model = load_model()
 
 displayMenu()
+
