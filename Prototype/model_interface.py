@@ -5,23 +5,43 @@ import random
 import numpy as np
 import pytest
 
-dataset = loadtxt('pima_indians_diabetes.csv', delimiter=',')
 dash = "-" * 10
-inputData = dataset[:,0:8]
-output = dataset[:,8]
 
 def load_model():
-	print("Loading model...")
-	json_file = open('diab_model.json', 'r')
-	loaded_model_json = json_file.read()
-	json_file.close()
-	loaded_model = model_from_json(loaded_model_json)
-	# load weights into new model
-	loaded_model.load_weights("model.h5")
-	loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-	print("Loaded model from disk")
+	loaded_model = None
+	dataset = None
+	varnum = None
 
-	return loaded_model
+	print("Choose model")
+	print("1. Diabetes 2. Cancer")
+	option = int(input("Choose: "))
+
+	if(option == 1):
+		dataset = loadtxt('models/datasets/pima_indians_diabetes.csv', delimiter=',')
+		varnum = 8
+
+		print("Loading model...")
+		json_file = open('models/diab_model.json', 'r')
+		loaded_model_json = json_file.read()
+		json_file.close()
+		loaded_model = model_from_json(loaded_model_json)
+		loaded_model.load_weights("models/diab_model.h5")
+		loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+	elif(option == 2):
+		dataset = loadtxt('models/datasets/breast_cancer.csv', delimiter=',')
+		varnum = 9
+
+		print("Loading model...")
+		json_file = open('models/cancer_model.json', 'r')
+		loaded_model_json = json_file.read()
+		json_file.close()
+		loaded_model = model_from_json(loaded_model_json)
+		loaded_model.load_weights("models/cancer_model.h5")
+		loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+	print("Loaded model from disk")
+	return loaded_model, dataset, varnum
 
 
 # evaluate the keras model
@@ -33,7 +53,8 @@ def evaluate(model):
 def predictClasses():
 	# make probability predictions with the model
 	# Accuracy increased by training with larger dataset, more hidden layers or adjusting epoch/batch_size
-	samples = int(input("Enter number of samples(Max 768): "))
+	rows = sum(1 for row in dataset)
+	samples = int(input("Enter number of samples(Max %d): "% rows))
 
 	predictions = model.predict(inputData)
 	for i in range(samples):
@@ -55,13 +76,25 @@ def predictClass():
 	prediction = model.predict(test)
 
 	print(dash + "Details" + dash)
-	print("%25s %10s"% ("No. Times Pregnant: ", 		str(randinput[0])))
-	print("%25s %10s"% ("Glucose Concentration : ", 	str(randinput[1])))
-	print("%25s %10s"% ("Blood Pressure: ",				str(randinput[2])))
-	print("%25s %10s"% ("Skin fold thickness: ",		str(randinput[3])))
-	print("%25s %10s"% ("Serum Inculin: ",				str(randinput[4])))
-	print("%25s %10s"% ("BMI: ",						str(randinput[5])))
-	print("%25s %10s"% ("Diabetes Pedigree Func: ",		str(randinput[6])))
+	if(varnum == 8):
+		print("%25s %10s"% ("No. Times Pregnant: ", 		str(randinput[0])))
+		print("%25s %10s"% ("Glucose Concentration : ", 	str(randinput[1])))
+		print("%25s %10s"% ("Blood Pressure: ",				str(randinput[2])))
+		print("%25s %10s"% ("Skin fold thickness: ",		str(randinput[3])))
+		print("%25s %10s"% ("Serum Inculin: ",				str(randinput[4])))
+		print("%25s %10s"% ("BMI: ",						str(randinput[5])))
+		print("%25s %10s"% ("Diabetes Pedigree Func: ",		str(randinput[6])))
+	elif(varnum == 9):
+		print("%25s %10s"% ("Age: ", 		str(randinput[0])))
+		print("%25s %10s"% ("BMI: ", 		str(randinput[1])))
+		print("%25s %10s"% ("Glucose: ",	str(randinput[2])))
+		print("%25s %10s"% ("Insulin: ",	str(randinput[3])))
+		print("%25s %10s"% ("HOMA: ",		str(randinput[4])))
+		print("%25s %10s"% ("Leptin: ",		str(randinput[5])))
+		print("%25s %10s"% ("Adiponectin: ",str(randinput[6])))
+		print("%25s %10s"% ("Resistin: ",	str(randinput[7])))
+		print("%25s %10s"% ("MCP: ",		str(randinput[8])))
+
 	print(dash)
 	print('Risk: %d %%'%  (prediction[0]*100))
 	print("Actual Output: " + str(randoutput))
@@ -105,8 +138,9 @@ def displayMenu():
 def test_Diab():
 	assert testClass(0) == 0.83139568567276
 
-
-model = load_model()
+model, dataset, varnum = load_model()
+inputData = dataset[:,0:varnum]
+output = dataset[:,varnum]
 
 displayMenu()
 

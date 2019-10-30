@@ -2,20 +2,22 @@ from numpy import loadtxt
 from keras.models import Sequential
 from keras.layers import Dense
 
+inputvars = 9
+datasetPath = './datasets/pima_indians_diabetes.csv'
 
 model = Sequential()
-dataset = loadtxt('pima_indians_diabetes.csv', delimiter=',')
+dataset = loadtxt(datasetPath, delimiter=',')
 
 # split into input (inputData) and output (output) variables
 # inputData - input variables
 # Y - Output 0 and 1
-inputData = dataset[:,0:8]
-output = dataset[:,8]
+inputData = dataset[:,0:inputvars]
+output = dataset[:,inputvars]
 
 # define the keras model (hidden layers)
 # Accuracy increased from 70% to 90% by adding 2 more hiddden layers
 # Nodes increased in second hidden layer to improve acuracy
-model.add(Dense(12, input_dim=8, activation='relu'))
+model.add(Dense(12, input_dim=inputvars, activation='relu'))
 model.add(Dense(12, activation='relu'))
 model.add(Dense(8, activation='relu'))
 model.add(Dense(8, activation='relu'))
@@ -31,10 +33,10 @@ model.fit(inputData, output, epochs=1000, batch_size=10, verbose=0)
 
 model_json = model.to_json()
 
-with open("diab_model.json", "w") as json_file:
+with open("../diab_model.json", "w") as json_file:
     json_file.write(model_json)
 
-model.save_weights("model.h5")
+model.save_weights("../diab_model.h5")
 print("Saved model to disk")
 _, accuracy = model.evaluate(inputData, output)
 print('Accuracy: %.2f %%' % (accuracy * 100))
