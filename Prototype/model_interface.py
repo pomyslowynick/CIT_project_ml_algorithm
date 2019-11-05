@@ -86,7 +86,7 @@ def predictClass():
 	test = np.array([randinput])
 	prediction = model.predict(test)
 
-	print(dash + "Details" + dash)
+	print(dash + "Details for entry: " + str(rand-1) + dash)
 	if(varnum == 8):
 		print("%25s %10s"% ("No. Times Pregnant: ", 		str(randinput[0])))
 		print("%25s %10s"% ("Glucose Concentration : ", 	str(randinput[1])))
