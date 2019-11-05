@@ -3,8 +3,8 @@ from keras.models import Sequential
 from keras.layers import Dense
 
 
-inputvars = 9
-datasetPath = '../datasets/breast_cancer.csv'
+inputvars = 13
+datasetPath = '../datasets/heart_disease.csv'
 
 model = Sequential()
 dataset = loadtxt(datasetPath, delimiter=',')
@@ -34,10 +34,10 @@ model.fit(inputData, output, epochs=1000, batch_size=10, verbose=0)
 
 model_json = model.to_json()
 
-with open("../cancer_model.json", "w") as json_file:
+with open("../heartd_model.json", "w") as json_file:
     json_file.write(model_json)
 
-model.save_weights("../cancer_model.h5")
+model.save_weights("../heartd_model.h5")
 print("Saved model to disk")
 _, accuracy = model.evaluate(inputData, output)
 print('Accuracy: %.2f %%' % (accuracy * 100))

@@ -13,7 +13,7 @@ def load_model():
 	varnum = None
 
 	print("Choose model")
-	print("1. Diabetes 2. Cancer")
+	print("1. Diabetes 2. Cancer 3. Heart Disease")
 	option = int(input("Choose: "))
 
 	if(option == 1):
@@ -40,6 +40,17 @@ def load_model():
 		loaded_model.load_weights("models/cancer_model.h5")
 		loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
+	elif(option == 3):
+		dataset = loadtxt('models/datasets/heart_disease.csv', delimiter=',')
+		varnum = 13
+
+		print("Loading model...")
+		json_file = open('models/heartd_model.json', 'r')
+		loaded_model_json = json_file.read()
+		json_file.close()
+		loaded_model = model_from_json(loaded_model_json)
+		loaded_model.load_weights("models/heartd_model.h5")
+		loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 	print("Loaded model from disk")
 	return loaded_model, dataset, varnum
 
@@ -94,6 +105,21 @@ def predictClass():
 		print("%25s %10s"% ("Adiponectin: ",str(randinput[6])))
 		print("%25s %10s"% ("Resistin: ",	str(randinput[7])))
 		print("%25s %10s"% ("MCP: ",		str(randinput[8])))
+
+	elif(varnum == 13):
+		print("%25s %10s"% ("Age: ", 		str(randinput[0])))
+		print("%25s %10s"% ("Sex: ", 		str(randinput[1])))
+		print("%25s %10s"% ("Chest Pain: ",	str(randinput[2])))
+		print("%25s %10s"% ("Rest BP: ",	str(randinput[3])))
+		print("%25s %10s"% ("Cholestoral: ",str(randinput[4])))
+		print("%25s %10s"% ("FBS: ",		str(randinput[5])))
+		print("%25s %10s"% ("Rest ECG: ",	str(randinput[6])))
+		print("%25s %10s"% ("Thalach: ",	str(randinput[7])))
+		print("%25s %10s"% ("Exang: ",		str(randinput[8])))
+		print("%25s %10s" %("OldPeak: ", 	str(randinput[8])))
+		print("%25s %10s"% ("Slope: ",		str(randinput[8])))
+		print("%25s %10s"% ("CA: ",			str(randinput[8])))
+		print("%25s %10s"% ("Thal: ",		str(randinput[8])))
 
 	print(dash)
 	print('Risk: %d %%'%  (prediction[0]*100))
