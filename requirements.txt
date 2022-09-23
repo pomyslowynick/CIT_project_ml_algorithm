@@ -29,7 +29,7 @@ numpy==1.16.5
 packaging==19.2
 pathlib2==2.3.5
 pluggy==0.13.0
-protobuf==3.10.0
+protobuf==3.18.3
 py==1.10.0
 pycrypto==2.6.1
 pygobject==3.26.1
